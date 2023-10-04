@@ -10,7 +10,7 @@ class ScenarioElement {
 
     Effect effect;
     int repeats;
-
+    
     ScenarioElement(Effect e, int r) {
         effect = e;
         repeats = r;
@@ -25,7 +25,10 @@ public class Scenario extends Thread {
 
     private final List<ScenarioElement> myElements = new LinkedList<>();
     private Bandeau mybandeau = null;
-    
+    private final ReentrantReadWriteLock rwl = new ReentrantReadWriteLock();
+    private final Lock r = rwl.readLock();
+    private final Lock w = rwl.writeLock();
+
 
     /**
      * Ajouter un effect au scenario.
@@ -34,8 +37,10 @@ public class Scenario extends Thread {
      * @param repeats le nombre de répétitions pour cet effet
      */
     public void addEffect(Effect e, int repeats) {
+        w.lock(); try{
         myElements.add(new ScenarioElement(e, repeats));
-    }
+        }finally{w.unlock();}
+}
     
 
     /**
@@ -44,6 +49,7 @@ public class Scenario extends Thread {
      * @param b le bandeau ou s'afficher.
      */ 
     public void playOn(Bandeau b) {
+        
         mybandeau=b;  
     }
     
@@ -51,13 +57,14 @@ public class Scenario extends Thread {
     
     
     public void run(){
+        r.lock(); try {
         synchronized(mybandeau){
         for (ScenarioElement element : myElements) {
             for (int repeats = 0; repeats < element.repeats; repeats++) {
                 element.effect.playOn(mybandeau);
             }
         }
-
         }
+        } finally { r.unlock(); }
     }
 }
