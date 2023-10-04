@@ -1,5 +1,7 @@
 package bandeau;
 
+
+
 public class ExerciceAvecThreads {
 
     public static void main(String[] args) {
@@ -8,20 +10,27 @@ public class ExerciceAvecThreads {
     }
 
     public void exemple() {
+        
 
-        Scenario s = makeScenario();
+        Scenario s1 = makeScenario();
+        Scenario s2 = makeScenario();
+        Scenario s3 = makeScenario();
         // On cree les bandeaux
         Bandeau b1 = new Bandeau();
         Bandeau b2 = new Bandeau();
         Bandeau b3 = new Bandeau();
         System.out.println("CTRL-C pour terminer le programme");
         // On doit jouer le scénario en même temps sur les trois bandeaux
-        s.playOn(b1);
-        s.playOn(b2);
-        s.playOn(b3);
+        s1.playOn(b1);
+        s2.playOn(b2);
+        s3.playOn(b3);
         // On rejoue le scénario sur b1 quand le premier jeu est fini
-        s.playOn(b1);
+        
+        s1.start();
+        s2.start();
+        s3.start();
     }
+    
 
     private Scenario makeScenario() {
         // On crée un scenario
